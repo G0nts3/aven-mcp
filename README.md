@@ -1,0 +1,2 @@
+# Aven MCP
+Project scaffold.
