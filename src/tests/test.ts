@@ -1,4 +1,4 @@
-import { getImageMetadata } from "./analyzer/index.js";
+import { getImageMetadata } from "../analyzer/index.js";
 
 const metadata = await getImageMetadata(
     "./cache/example.png"

@@ -1,0 +1,9 @@
+import {screenshotManager} from "../storage/screenshot_manager.js";
+
+const result =
+    await screenshotManager.getScreenshotPath(
+        "Behance",
+        "https://www.behance.net/gallery/123456"
+    );
+
+console.log(result);

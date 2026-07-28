@@ -1,12 +1,7 @@
-import fs from "node:fs/promises";
-import path from "node:path";
-import crypto from "node:crypto";
-
 import type { Page } from "playwright";
 
 import { browserManager, logger } from "../utils/index.js";
-
-const CACHE_ROOT = path.resolve(process.cwd(), "cache");
+import { screenshotManager } from "../storage/index.js";
 
 export interface CaptureResult {
     screenshotPath: string;
@@ -20,6 +15,22 @@ export async function captureReference(
     let page: Page | null = null;
 
     try {
+
+        // Check if we've already captured this page
+        const record = await screenshotManager.getScreenshotPath(
+            provider,
+            projectUrl
+        );
+
+        if (record.exists) {
+
+            logger.info(`Using cached screenshot: ${record.filename}`);
+
+            return {
+                screenshotPath: record.filePath
+            };
+
+        }
 
         const browser = await browserManager.getBrowser();
 
@@ -37,30 +48,12 @@ export async function captureReference(
             timeout: 60000
         });
 
+        // Give the page time to finish animations/lazy loading
         await page.waitForTimeout(2000);
-
-        const directory = path.join(
-            CACHE_ROOT,
-            provider.toLowerCase()
-        );
-
-        await fs.mkdir(directory, {
-            recursive: true
-        });
-
-        const filename =
-            crypto
-                .createHash("sha256")
-                .update(projectUrl)
-                .digest("hex")
-                .slice(0, 16) + ".png";
-
-        const screenshotPath =
-            path.join(directory, filename);
 
         await page.screenshot({
 
-            path: screenshotPath,
+            path: record.filePath,
 
             fullPage: true,
 
@@ -72,9 +65,15 @@ export async function captureReference(
 
         return {
 
-            screenshotPath
+            screenshotPath: record.filePath
 
         };
+
+    } catch (error) {
+
+        logger.error(error);
+
+        throw error;
 
     } finally {
 
