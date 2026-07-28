@@ -28,11 +28,11 @@ export async function searchPinterestSource(
         logger.info(`Pinterest search: ${query}`);
 
         await page.goto(url, {
-            waitUntil: "networkidle"
+            waitUntil: "domcontentloaded"
         });
 
         // Give lazy-loaded images time to load
-        await page.waitForTimeout(2000);
+        await page.waitForTimeout(3000);
 
         // Scroll to trigger lazy loading
         await page.evaluate(async () => {
