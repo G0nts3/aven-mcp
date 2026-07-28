@@ -15,18 +15,13 @@ export interface ReferenceItem {
 
     tags: string[];
 
-    width?: number;
-
-    height?: number;
-
     metadata?: {
-
         colors?: string[];
-
         fonts?: string[];
-
         category?: string;
-
     };
+
+    width?: number;
+    height?: number;
 
 }

@@ -1,22 +1,43 @@
 import type { ReferenceItem } from "../types/index.js";
 
-const providerScores = {
-    Awwwards: 30,
-    Behance: 20,
-    Pinterest: 10
-} as const;
-
 export function scoreReference(item: ReferenceItem): number {
 
-    let score = providerScores[item.provider] ?? 0;
+    let score = 0;
 
-    if (item.imageUrl.includes("original")) score += 15;
-    if (item.imageUrl.includes("1200")) score += 10;
-    if (item.imageUrl.includes("736")) score += 8;
-    if (item.imageUrl.includes("564")) score += 6;
+    // Prefer higher-resolution images
+    if (item.width && item.height) {
 
-    if (item.title.length > 15)
-        score += 2;
+        const pixels = item.width * item.height;
+
+        if (pixels >= 2_000_000) score += 40;
+        else if (pixels >= 1_000_000) score += 30;
+        else if (pixels >= 500_000) score += 20;
+        else score += 10;
+
+    }
+
+    // Provider weighting
+    switch (item.provider) {
+
+        case "Awwwards":
+            score += 30;
+            break;
+
+        case "Behance":
+            score += 20;
+            break;
+
+        case "Pinterest":
+            score += 10;
+            break;
+
+    }
+
+    // Reward descriptive titles
+    if (item.title.length > 20) {
+        score += 10;
+    }
 
     return score;
+
 }
