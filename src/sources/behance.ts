@@ -47,13 +47,13 @@ export async function searchBehanceSource(
 
         });
 
-        const raw = await page.evaluate((limit) => {
+        const raw = await page.evaluate((limit: number) => {
 
             const seen = new Set<string>();
 
             return Array.from(document.querySelectorAll("img"))
 
-                .filter(img => {
+                .filter((img) => {
 
                     const src = img.getAttribute("src") ?? "";
 
@@ -73,26 +73,45 @@ export async function searchBehanceSource(
                 .slice(0, limit)
 
                 .map((img, index) => ({
+
                     title:
                         img.getAttribute("alt") ??
                         `Behance Project ${index + 1}`,
-                    imageUrl: img.getAttribute("src") ?? "",
-                    sourceUrl: window.location.href,
-                    width: img.naturalWidth,
-                    height: img.naturalHeight
+
+                    imageUrl:
+                        img.getAttribute("src") ?? "",
+
+                    sourceUrl:
+                        window.location.href,
+
+                    width:
+                        img.naturalWidth,
+
+                    height:
+                        img.naturalHeight
+
                 }));
 
         }, limit);
 
-        const results: ReferenceItem[] = raw.map(item => ({
+        const results: ReferenceItem[] = raw.map((item) => ({
+
             id: crypto.randomUUID(),
+
             title: item.title,
+
             imageUrl: item.imageUrl,
-            sourceUrl: item.sourceUrl,
+
+            projectUrl: item.sourceUrl,
+
             provider: "Behance",
+
             tags: [],
+
             width: item.width,
+
             height: item.height
+
         }));
 
         logger.info({

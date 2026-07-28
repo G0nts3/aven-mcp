@@ -4,14 +4,19 @@ export interface ReferenceItem {
 
     title: string;
 
-    imageUrl: string;
-
-    sourceUrl: string;
-
     provider:
         | "Pinterest"
         | "Behance"
         | "Awwwards";
+
+    // Direct image
+    imageUrl: string;
+
+    // Page containing the design
+    projectUrl: string;
+
+    // Local cached screenshot/download
+    screenshotPath?: string;
 
     tags: string[];
 

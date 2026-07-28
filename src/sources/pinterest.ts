@@ -16,7 +16,6 @@ export async function searchPinterestSource(
 
         page = await browser.newPage();
 
-        // Larger viewport encourages Pinterest to load higher quality images
         await page.setViewportSize({
             width: 1600,
             height: 3000
@@ -31,10 +30,8 @@ export async function searchPinterestSource(
             waitUntil: "domcontentloaded"
         });
 
-        // Give lazy-loaded images time to load
         await page.waitForTimeout(3000);
 
-        // Scroll to trigger lazy loading
         await page.evaluate(async () => {
 
             for (let i = 0; i < 5; i++) {
@@ -61,7 +58,6 @@ export async function searchPinterestSource(
 
                     let imageUrl = img.getAttribute("src") ?? "";
 
-                    // Prefer the largest image from srcset
                     if (srcset) {
 
                         const entries = srcset
@@ -106,14 +102,23 @@ export async function searchPinterestSource(
         }, limit);
 
         const results: ReferenceItem[] = rawResults.map((item) => ({
+
             id: crypto.randomUUID(),
+
             title: item.title,
+
             imageUrl: item.imageUrl,
-            sourceUrl: item.sourceUrl,
+
+            projectUrl: item.sourceUrl,
+
             provider: "Pinterest",
+
             tags: [],
+
             width: item.width,
+
             height: item.height
+
         }));
 
         logger.info({

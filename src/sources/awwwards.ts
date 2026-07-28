@@ -96,8 +96,8 @@ export async function searchAwwwardsSource(
             id: crypto.randomUUID(),
             title: item.title,
             imageUrl: item.imageUrl,
-            sourceUrl: item.sourceUrl,
-            provider: "Behance",
+            projectUrl: item.sourceUrl,
+            provider: "Awwwards",
             tags: [],
             width: item.width,
             height: item.height
